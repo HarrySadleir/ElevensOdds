@@ -3,7 +3,7 @@ use rand::seq::SliceRandom;
 
 #[derive(Debug)]
 #[derive(Copy, Clone)]
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum Card {
     Num(u16),
     Jack,
@@ -34,8 +34,8 @@ pub fn new_shuffled_deck(debug: bool) -> Vec<Card> {
 
 pub fn run_game(deck: &mut Vec<Card>, debug: bool) -> bool {
     let mut board: [Card; 9] = [Card::Nil; 9];
-    for i in 0..9 {
-        board[i] = deck.pop().expect("This should never be None");
+    for spot in &mut board {
+        *spot = deck.pop().expect("This should never be None");
     }
 
     loop {
@@ -83,9 +83,9 @@ fn find_match(board: &[Card; 9]) -> Result<Vec<usize>, ()> {
 
         
         let mut k: Option<usize> = None;
-        for j in i..9 {
-            if looking_for.contains(&board[j]) { 
-                looking_for.retain(|card| card != &board[j]);
+        for (j, possible_match) in board.iter().enumerate().take(9).skip(i) {
+            if looking_for.contains(possible_match) { 
+                looking_for.retain(|card| card != possible_match);
                 if looking_for.is_empty() {
                     match k {
                         Some(num) => return Ok(vec![i, j, num]),
@@ -98,5 +98,5 @@ fn find_match(board: &[Card; 9]) -> Result<Vec<usize>, ()> {
         }
     }
 
-    return Err(());
+    Err(())
 }
