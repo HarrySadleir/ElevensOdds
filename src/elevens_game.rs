@@ -38,7 +38,7 @@ pub fn run_game(deck: &mut Vec<Card>, debug: bool) -> bool {
         board[i] = deck.pop().expect("This should never be None");
     }
 
-    while (true) {
+    loop {
         if debug {
             println!("Deck size: {}", deck.len());
         }
@@ -67,8 +67,6 @@ pub fn run_game(deck: &mut Vec<Card>, debug: bool) -> bool {
             }
         };
     }
-
-    return false;
 }
 
 fn find_match(board: &[Card; 9]) -> Result<Vec<usize>, ()> {
